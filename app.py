@@ -190,7 +190,7 @@ if not recommend_button:
 else:
     movie_id = movies_df[movies_df['title'] == selected_movie]['movieId'].values[0]
     try:
-        response = requests.get(f"http://host.docker.internal:8000/recommend/{movie_id}")
+        response = requests.get(f"https://cinematch-app-1y44.onrender.com/recommend/{movie_id}")
         oneriler = response.json()["oneriler"]
         st.markdown(f"<div class='section-title'>🎯 '{selected_movie}' Sevenler İçin</div>", unsafe_allow_html=True)
         cols = st.columns(5)

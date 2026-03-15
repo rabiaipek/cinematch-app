@@ -13,7 +13,7 @@ if 'theme' not in st.session_state:
 if 'selected_genre' not in st.session_state:
     st.session_state.selected_genre = None
 
-# TMDB Afiş Fonksiyonu
+# TMDB Afiş Fonksiyonu (Aynı bıraktık)
 def get_movie_poster(movie_title):
     clean_title = movie_title.split(' (')[0]
     api_key = "8265bd1679663a7ea12ac168da84d2e8" 
@@ -40,54 +40,25 @@ def load_data():
 
 movies_df, genre_list = load_data()
 
-# 4. RENK VE TEMA AYARLARI
+# 4. RENK VE TEMA AYARLARI (Senin Ayarların)
 if st.session_state.theme == 'Koyu':
     bg_c, txt_c, card_c = "#0A0C0F", "#FFFFFF", "#16191E"
     btn_bg, btn_txt, gold_c = "#E50914", "#FFFFFF", "#E50914" 
     overlay_c = "rgba(0, 0, 0, 0.75)"
     sidebar_bg = "#000000"
+    title_color = "#FFFFFF"
 else:
     bg_c, txt_c, card_c = "#F8F9FA", "#1A1A1B", "#FFFFFF" 
     btn_bg, btn_txt, gold_c = "#3498DB", "#FFFFFF", "#3498DB" 
     overlay_c = "rgba(255, 255, 255, 0.85)"
     sidebar_bg = "#F1F2F6"
+    title_color = "#3498DB"
 
-# Arka plan görseli
 new_bg_img_url = "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?q=80&w=1920"
 
-# 5. CSS GÜNCELLEMESİ
-if st.session_state.theme == 'Koyu':
-    bg_c, txt_c, card_c = "#0A0C0F", "#FFFFFF", "#16191E"
-    btn_bg, btn_txt, gold_c = "#E50914", "#FFFFFF", "#E50914" 
-    overlay_c = "rgba(0, 0, 0, 0.75)"
-    sidebar_bg = "#000000"
-    title_color = "#FFFFFF" # Koyu modda başlık beyaz kalsın
-else:
-    bg_c, txt_c, card_c = "#F8F9FA", "#1A1A1B", "#FFFFFF" 
-    btn_bg, btn_txt, gold_c = "#3498DB", "#FFFFFF", "#3498DB" 
-    overlay_c = "rgba(255, 255, 255, 0.85)"
-    sidebar_bg = "#F1F2F6"
-    title_color = "#3498DB" # Işığı açınca başlık MAVİ olsun
-
+# 5. CSS (Aynı bıraktık, User ID kutusu için küçük bir ekleme yaptık)
 st.markdown(f"""
 <style>
-    /* ... Diğer CSS kodların ... */
-
-    .main-title {{ 
-        font-size: 60px; 
-        font-weight: 900; 
-        color: {title_color} !important; /* Dinamik başlık rengi */
-        text-align: center; 
-        margin-bottom: 5px;
-        text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
-    }}
-    
-    /* ... Diğer CSS kodların ... */
-</style>
-""", unsafe_allow_html=True)
-st.markdown(f"""
-<style>
-    /* Ana Arka Plan */
     .stApp {{
         background-image: url('{new_bg_img_url}');
         background-size: cover; background-attachment: fixed;
@@ -96,28 +67,21 @@ st.markdown(f"""
         content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
         background-color: {overlay_c}; backdrop-filter: blur(5px); z-index: -1;
     }}
-
-    /* YAN PANEL (SIDEBAR) */
     [data-testid="stSidebar"] {{
         background-color: {sidebar_bg} !important;
         border-right: 1px solid rgba(255,255,255,0.1);
     }}
-    
-    /* SELECTBOX (ARAMA KUTUSU) DÜZENLEMESİ */
-    /* Kutu içindeki metni siyah yapmak ve kutu görünürlüğünü artırmak için */
+    /* Input kutularını daha şık yapalım */
+    .stNumberInput div[data-baseweb="input"] {{
+        background-color: #16191E !important;
+        color: white !important;
+        border-radius: 8px !important;
+    }}
     div[data-baseweb="select"] > div {{
         background-color: #FFFFFF !important;
         color: #000000 !important;
         border-radius: 8px !important;
     }}
-    
-    /* Seçenekler listesindeki yazı rengi */
-    div[data-baseweb="popover"] li {{
-        color: #000000 !important;
-        background-color: #FFFFFF !important;
-    }}
-
-    /* Butonlar */
     div.stButton > button {{
         background-color: {btn_bg} !important;
         color: {btn_txt} !important;
@@ -126,8 +90,6 @@ st.markdown(f"""
         border-radius: 10px !important;
         height: 45px;
     }}
-
-    /* Film Kartları */
     .movie-card {{
         background-color: {card_c}; padding: 12px; border-radius: 18px;
         text-align: center; border: 1px solid rgba(128,128,128,0.1);
@@ -136,28 +98,40 @@ st.markdown(f"""
         color: {txt_c} !important;
     }}
     .poster-img {{ width: 100%; height: 280px; border-radius: 12px; object-fit: cover; }}
-    .main-title {{ font-size: 60px; font-weight: 900; color: {txt_c}; text-align: center; }}
+    .main-title {{ font-size: 60px; font-weight: 900; color: {title_color} !important; text-align: center; margin-bottom: 5px; }}
     .section-title {{ font-size: 24px; font-weight: bold; color: {txt_c}; border-left: 5px solid {gold_c}; padding-left: 10px; }}
 </style>
 """, unsafe_allow_html=True)
 
-# 6. SIDEBAR İÇERİĞİ
+# 6. SIDEBAR İÇERİĞİ (YENİ KISIM BURADA)
 with st.sidebar:
     st.markdown(f"<h2 style='color: white;'>⚙️ {APP_NAME}</h2>", unsafe_allow_html=True)
+    
+    # TEMA DEĞİŞTİRİCİ
     if st.button("☀️ Işığı Aç" if st.session_state.theme == 'Koyu' else "🌙 Karanlığa Geç"):
         st.session_state.theme = 'Açık' if st.session_state.theme == 'Koyu' else 'Koyu'
         st.rerun()
+    
+    st.markdown("---")
+    
+    # KULLANICI GİRİŞİ (YENİ EKLENEN)
+    st.markdown("<b style='color: white;'>👤 Kullanıcı Kimliği:</b>", unsafe_allow_html=True)
+    user_id = st.number_input("Kullanıcı ID", min_value=1, value=1, step=1, label_visibility="collapsed")
+    st.caption("AI önerileri bu ID'ye göre kişiselleştirilir.")
+    
     st.markdown("---")
     st.markdown("<b style='color: white;'>🔍 Beğendiğiniz Filmi Seçin:</b>", unsafe_allow_html=True)
     selected_movie = st.selectbox("", movies_df['title'].values, label_visibility="collapsed")
     
-    st.write("") # Boşluk
+    st.write("") 
     recommend_button = st.button("Benzer Filmleri Bul 🚀", use_container_width=True)
     
     if st.button("🏠 Ana Sayfa", use_container_width=True):
         st.session_state.selected_genre = None
         st.rerun()
+    
     st.markdown("---")
+    st.success(f"Mod: Hibrit AI (NCF + Content)")
     st.caption(f"© 2026 {APP_NAME}")
 
 # 7. ANA İÇERİK
@@ -187,15 +161,21 @@ if not recommend_button:
             with pop_cols[i]:
                 poster = get_movie_poster(row['title'])
                 st.markdown(f'<div class="movie-card"><img src="{poster}" class="poster-img"><br><b>{row["title"].split(" (")[0]}</b></div>', unsafe_allow_html=True)
+
 else:
+    # BURASI ARTIK HİBRİT ÇALIŞIYOR
+    # BURASI ARTIK YEREL BACKEND'E BAĞLI
     movie_id = movies_df[movies_df['title'] == selected_movie]['movieId'].values[0]
     try:
-        response = requests.get(f"https://cinematch-app-1y44.onrender.com/recommend/{movie_id}")
+        # Kendi bilgisayarındaki FastAPI'ye (8000 portu) istek atıyoruz
+        response = requests.get(f"http://127.0.0.1:8000/recommend/{user_id}/{movie_id}")
         oneriler = response.json()["oneriler"]
-        st.markdown(f"<div class='section-title'>🎯 '{selected_movie}' Sevenler İçin</div>", unsafe_allow_html=True)
+        
+        st.markdown(f"<div class='section-title'>🎯 '{selected_movie}' Sevenler & {user_id}. Kullanıcı İçin</div>", unsafe_allow_html=True)
         cols = st.columns(5)
         for i, film in enumerate(oneriler[:5]):
             with cols[i]:
                 p_url = get_movie_poster(film['title'])
                 st.markdown(f'<div class="movie-card"><img src="{p_url}" class="poster-img"><br><b>{film["title"].split(" (")[0]}</b></div>', unsafe_allow_html=True)
-    except: st.error("Backend servisi hazır değil!")
+    except Exception as e: 
+        st.error(f"Bağlantı Hatası: {e}")
